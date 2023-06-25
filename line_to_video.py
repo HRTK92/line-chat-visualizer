@@ -155,7 +155,8 @@ if output == None:
     output = fileName.split(".")[0]
 try:
     animation = VideoClip(make_frame, duration=len(dates) / 10)
-    animation.write_videofile(output + ".mp4", fps=10, codec="libx264", audio=False)
+    animation.write_videofile(output + ".mp4", fps=10,
+                              codec="libx264", audio=False)
 except KeyboardInterrupt:
     print('\033[31m' + 'キャンセルしました。' + '\033[0m')
     exit()
