@@ -8,6 +8,7 @@ from moviepy.video.io.bindings import mplfig_to_npimage
 
 
 def validate_date(date):
+    """日付のフォーマットが正しいかチェックする関数"""
     if re.match(r"^\d{4}/\d{1,2}/\d{1,2}", date):
         return date
     else:
@@ -18,6 +19,7 @@ def validate_date(date):
 parser = argparse.ArgumentParser()
 parser.add_argument("fileName", help="LINEのトーク履歴のファイル名")
 parser.add_argument("-o", "--output", help="出力ファイル名")
+parser.add_argument("-f", "--fps", help="FPS", default=10, type=int)
 parser.add_argument("-s", "--start-date",
                     help="開始日 | 例: 2020/1/1", type=validate_date)
 parser.add_argument("-dpi", "--dpi", help="解像度", default=150, type=int)
@@ -26,6 +28,7 @@ parser.add_argument("-lowest", "--lowest",
 args = parser.parse_args()
 fileName = args.fileName
 output = args.output
+fps = args.fps
 startDate = args.start_date
 dpi = args.dpi
 lowest = args.lowest
@@ -57,7 +60,7 @@ for line in data.splitlines():
             if re.match(r"\d{1,2}:\d{1,2}", line):
                 if line.endswith("が退出しました。"):
                     continue
-                name = line.split("\t")[1]
+                name = line.split()[1]
                 if name not in user_messages:
                     user_messages[name] = {}
                 if nowDate not in user_messages[name]:
@@ -68,8 +71,11 @@ for line in data.splitlines():
         lineIndex = data.splitlines().index(line) + 1
         print(
             '\033[31m' + f'{lineIndex}行目のデータが正しくありません。' + '\033[0m')
+        print(e)
+
 dates = sorted(
-    list(set([date for user in user_messages.values() for date in user.keys()])))
+    list(set([date for user in user_messages.values() for date in user.keys()])
+         ))
 
 if dates == []:
     print('\033[31m' + 'データが見つかりませんでした。' + '\033[0m')
@@ -90,9 +96,9 @@ for i, user in enumerate(user_messages.keys()):
 print('\033[32m' + 'グラフを作成します。' + '\033[0m')
 
 # フレームを作成
-
-
+plt.style.use("ggplot")
 def make_frame(t):
+    """フレームを作成する関数"""
     plt.rcParams["figure.figsize"] = (14, 10)
     plt.rcParams["figure.dpi"] = dpi
     plt.rcParams["font.size"] = 14
@@ -100,7 +106,7 @@ def make_frame(t):
 
     fig = plt.figure()
     ax = fig.gca()
-    time_index = int(t * 10)
+    time_index = int(t * fps)
 
     # ユーザーごとのメッセージ数を計算
     user_counts = {}
@@ -151,11 +157,11 @@ def make_frame(t):
 
 
 # 動画を作成
-if output == None:
+if output is None:
     output = fileName.split(".")[0]
 try:
-    animation = VideoClip(make_frame, duration=len(dates) / 10)
-    animation.write_videofile(output + ".mp4", fps=10,
+    animation = VideoClip(make_frame, duration=len(dates) / fps)
+    animation.write_videofile(output + ".mp4", fps=fps,
                               codec="libx264", audio=False)
 except KeyboardInterrupt:
     print('\033[31m' + 'キャンセルしました。' + '\033[0m')

@@ -1,0 +1,4 @@
+matplotlib
+moviepy
+Pillow
+japanize_matplotlib
