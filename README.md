@@ -1,4 +1,4 @@
-# LINE to Video
+# line-chat-visualizer
 
 LINE のトーク履歴を解析し、グラフや動画を作成するスクリプトです。
 
