@@ -1,16 +1,17 @@
 # LINE to Video
 
-LINE のトーク履歴を解析して、matplotlib でグラフを作成し、moviepy で動画に変換します。
+LINE のトーク履歴を解析し、グラフや動画を作成するスクリプトです。
+
+![demo](./line_chat_video.gif)
 
 ## Requirements
 
 - matplotlib
 - moviepy
-- Pillow
 - japanize_matplotlib (日本語のフォントを使用する場合)
 
 ```
-pip install matplotlib moviepy Pillow japanize_matplotlib
+pip install matplotlib moviepy japanize_matplotlib
 ```
 
 ## How to use
@@ -23,13 +24,10 @@ LINE のトーク画面からメニューを開き、その他 > トーク履歴
 ### 2. トーク履歴を解析する
 
 ```
-python3 line_to_video.py LINEのトークファイル.txt
+python3 index.py
 ```
 
-#### オプション
-
-- `-o` `--output` : 出力ファイル名を指定します。デフォルトは `output.mp4` です。
-- `-f` `--fps` : 動画のフレームレートを指定します。デフォルトは `10` です。
-- `-s` `--start-date` : 開始日を指定します。指定しない場合はトーク履歴の最初の日になります。
-- `-dpi` `--dpi` : 解像度を指定します。デフォルトは `150` です。
-- `-lowest` `--lowest` : 最低メッセージ数を指定します。この数以下のメッセージ数のユーザーはグラフに表示されません。デフォルトは `0` です。
+```python3
+90| line_chat_file_path = "text.txt" # ここにLINEのトーク履歴のテキストファイルを指定
+91| output_video_path = "line_chat_video.mp4" # ここに出力する動画ファイル名を指定
+```
